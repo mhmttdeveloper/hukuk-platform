@@ -3,25 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.4.6"
+    "dev": "cd apps/web && npm run dev",
+    "build": "cd apps/web && npm run build",
+    "lint": "cd apps/web && npm run lint",
+    "test": "cd apps/web && npm run test",
+    "clean": "cd apps/web && npm run clean",
+    "build:shared": "cd packages/shared && npm run build",
+    "db:generate": "cd apps/web && npm run db:generate",
+    "db:migrate": "cd apps/web && npm run db:migrate",
+    "db:seed": "cd apps/web && npm run db:seed",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.6",
-    "@eslint/eslintrc": "^3"
+    "@types/bcryptjs": "^2.4.6",
+    "turbo": "^2.0.0"
   }
 }

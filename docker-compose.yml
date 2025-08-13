@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: hukuk_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hukuk_platformu
+      POSTGRES_USER: hukuk_user
+      POSTGRES_PASSWORD: hukuk_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - hukuk_network
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.7.0
+    container_name: hukuk_meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: hukuk_master_key_12345
+      MEILI_ENV: development
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+    networks:
+      - hukuk_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: hukuk_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - hukuk_network
+
+volumes:
+  postgres_data:
+  meilisearch_data:
+  redis_data:
+
+networks:
+  hukuk_network:
+    driver: bridge
