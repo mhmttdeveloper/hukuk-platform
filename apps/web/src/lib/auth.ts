@@ -7,6 +7,8 @@ import { UserRole, VerificationStatus } from "@prisma/client"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  url: process.env.NEXTAUTH_URL,
   providers: [
     CredentialsProvider({
       name: "credentials",
