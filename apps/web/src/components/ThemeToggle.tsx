@@ -4,7 +4,20 @@ import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  // Geçici olarak hata durumunda fallback
+  let theme = 'system';
+  let setTheme = () => {};
+  let resolvedTheme = 'light';
+
+  try {
+    const themeContext = useTheme();
+    theme = themeContext.theme;
+    setTheme = themeContext.setTheme;
+    resolvedTheme = themeContext.resolvedTheme;
+  } catch (error) {
+    console.warn('Theme context not available:', error);
+    // Fallback değerler kullanılıyor
+  }
 
   const themes = [
     { value: 'light', label: 'Açık', icon: Sun },
