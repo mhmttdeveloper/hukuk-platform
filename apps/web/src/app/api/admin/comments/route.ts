@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 // Onay bekleyen yorumları getir
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id || session.user.role !== 'ADMIN') {
       return NextResponse.json(
@@ -76,7 +75,7 @@ export async function GET(request: NextRequest) {
 // Yorum durumunu güncelle (onayla/reddet)
 export async function PATCH(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id || session.user.role !== 'ADMIN') {
       return NextResponse.json(

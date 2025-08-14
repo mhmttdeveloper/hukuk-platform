@@ -1,69 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { ratingSchema } from '@shared/schemas'
+import { z } from 'zod'
 
-// Puanlamaları getir
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+// Rating şeması
+const ratingSchema = z.object({
+  score: z.number().min(1).max(5),
+  publicationId: z.string()
+})
+
+// Yayın puanlaması ekle/güncelle
+export async function POST(request: NextRequest) {
   try {
-    const ratings = await prisma.rating.findMany({
-      where: {
-        publicationId: params.id
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            surname: true,
-            profession: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
-
-    // Ortalama puanı hesapla
-    const totalRating = ratings.reduce((sum, rating) => sum + rating.score, 0)
-    const averageRating = ratings.length > 0 ? totalRating / ratings.length : 0
-
-    // Puan dağılımını hesapla
-    const ratingDistribution = {
-      1: ratings.filter(r => r.score === 1).length,
-      2: ratings.filter(r => r.score === 2).length,
-      3: ratings.filter(r => r.score === 3).length,
-      4: ratings.filter(r => r.score === 4).length,
-      5: ratings.filter(r => r.score === 5).length
-    }
-
-    return NextResponse.json({
-      ratings,
-      averageRating: Math.round(averageRating * 10) / 10,
-      totalRatings: ratings.length,
-      ratingDistribution
-    })
-  } catch (error) {
-    console.error('Puanlamalar getirilemedi:', error)
-    return NextResponse.json(
-      { error: 'Puanlamalar getirilemedi' },
-      { status: 500 }
-    )
-  }
-}
-
-// Puanlama ekle/güncelle
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -73,99 +22,110 @@ export async function POST(
     }
 
     const body = await request.json()
-    const validatedData = ratingSchema.parse(body)
+    const { score, publicationId } = ratingSchema.parse(body)
 
-    // Yayının var olup olmadığını kontrol et
-    const publication = await prisma.publication.findUnique({
-      where: { id: params.id }
-    })
-
-    if (!publication) {
-      return NextResponse.json(
-        { error: 'Yayın bulunamadı' },
-        { status: 404 }
-      )
-    }
-
-    // Kullanıcının daha önce puanlama yapıp yapmadığını kontrol et
+    // Kullanıcının daha önce puan verip vermediğini kontrol et
     const existingRating = await prisma.rating.findFirst({
       where: {
-        publicationId: params.id,
+        publicationId,
         userId: session.user.id
       }
     })
 
     let rating
-
     if (existingRating) {
-      // Mevcut puanlamayı güncelle
+      // Mevcut puanı güncelle
       rating = await prisma.rating.update({
         where: { id: existingRating.id },
-        data: {
-          score: validatedData.score,
-          comment: validatedData.comment || null,
-          updatedAt: new Date()
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              surname: true,
-              profession: true
-            }
-          }
-        }
+        data: { score }
       })
     } else {
-      // Yeni puanlama ekle
+      // Yeni puan ekle
       rating = await prisma.rating.create({
         data: {
-          score: validatedData.score,
-          comment: validatedData.comment || null,
-          publicationId: params.id,
+          score,
+          publicationId,
           userId: session.user.id
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              surname: true,
-              profession: true
-            }
-          }
         }
       })
     }
 
-    // Yayının ortalama puanını güncelle
+    // Yayının ortalama puanını hesapla
     const allRatings = await prisma.rating.findMany({
-      where: { publicationId: params.id }
-    })
-    
-    const newAverageRating = allRatings.reduce((sum, r) => sum + r.score, 0) / allRatings.length
-
-    await prisma.publication.update({
-      where: { id: params.id },
-      data: {
-        averageRating: Math.round(newAverageRating * 10) / 10,
-        ratingCount: allRatings.length
-      }
+      where: { publicationId }
     })
 
-    return NextResponse.json(rating, { status: existingRating ? 200 : 201 })
+    const averageScore = allRatings.reduce((sum, r) => sum + r.score, 0) / allRatings.length
+
+    return NextResponse.json({
+      rating,
+      averageScore: Math.round(averageScore * 100) / 100,
+      totalRatings: allRatings.length
+    })
   } catch (error) {
-    if (error.name === 'ZodError') {
+    console.error('Puanlama eklenemedi:', error)
+    return NextResponse.json(
+      { error: 'Puanlama eklenemedi' },
+      { status: 500 }
+    )
+  }
+}
+
+// Yayın puanlamalarını getir
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const publicationId = params.id
+
+    if (!publicationId) {
       return NextResponse.json(
-        { error: 'Geçersiz veri formatı', details: error.errors },
+        { error: 'Publication ID gerekli' },
         { status: 400 }
       )
     }
 
-    console.error('Puanlama eklenemedi:', error)
+    const ratings = await prisma.rating.findMany({
+      where: { publicationId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+
+    // Puan dağılımını hesapla
+    const ratingDistribution = {
+      1: 0, 2: 0, 3: 0, 4: 0, 5: 0
+    }
+
+    ratings.forEach(rating => {
+      if (rating.score >= 1 && rating.score <= 5) {
+        ratingDistribution[rating.score as keyof typeof ratingDistribution]++
+      }
+    })
+
+    // Ortalama puanı hesapla
+    const totalScore = ratings.reduce((sum, r) => sum + r.score, 0)
+    const averageRating = ratings.length > 0 ? totalScore / ratings.length : 0
+
+    return NextResponse.json({
+      ratings,
+      averageRating: Math.round(averageRating * 100) / 100,
+      totalRatings: ratings.length,
+      ratingDistribution
+    })
+  } catch (error) {
+    console.error('Puanlamalar getirilemedi:', error)
     return NextResponse.json(
-      { error: 'Puanlama eklenemedi' },
+      { error: 'Puanlamalar getirilemedi' },
       { status: 500 }
     )
   }

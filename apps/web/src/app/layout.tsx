@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Link from "next/link";
 import Providers from "@/components/Providers";
-import Navigation from "@/components/Navigation";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AdProvider } from "@/contexts/AdContext";
 
@@ -29,23 +29,12 @@ export default function RootLayout({
           <ThemeProvider>
             <AdProvider>
               <div className="flex flex-col min-h-screen">
-                <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                      <div className="flex items-center">
-                        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                          Hukuk Platformu
-                        </h1>
-                      </div>
-                      <Navigation />
-                    </div>
-                  </div>
-                </header>
-
-                <main className="flex-grow">
+                {/* Main content - Layout'lara göre render edilir */}
+                <div className="flex-grow">
                   {children}
-                </main>
+                </div>
 
+                {/* Footer - Her zaman görünür */}
                 <footer className="bg-gray-800 dark:bg-gray-900 text-white border-t border-gray-700 dark:border-gray-600 transition-colors duration-200">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -58,19 +47,19 @@ export default function RootLayout({
                       <div>
                         <h4 className="text-md font-semibold mb-4">Hızlı Erişim</h4>
                         <ul className="space-y-2">
-                          <li><a href="/publications" className="text-gray-300 hover:text-white">Yayınlar</a></li>
-                          <li><a href="/laws" className="text-gray-300 hover:text-white">Kanunlar</a></li>
-                          <li><a href="/cases" className="text-gray-300 hover:text-white">Kararlar</a></li>
-                          <li><a href="/categories" className="text-gray-300 hover:text-white">Kategoriler</a></li>
+                          <li><Link href="/publications" className="text-gray-300 hover:text-white">Yayınlar</Link></li>
+                          <li><Link href="/legislation" className="text-gray-300 hover:text-white">Mevzuat</Link></li>
+                          <li><Link href="/jurisprudence" className="text-gray-300 hover:text-white">İçtihat</Link></li>
+                          <li><Link href="/categories" className="text-gray-300 hover:text-white">Kategoriler</Link></li>
                         </ul>
                       </div>
                       <div>
                         <h4 className="text-md font-semibold mb-4">Kullanıcı</h4>
                         <ul className="space-y-2">
-                          <li><a href="/auth/signin" className="text-gray-300 hover:text-white">Giriş Yap</a></li>
-                          <li><a href="/auth/signup" className="text-gray-300 hover:text-white">Kayıt Ol</a></li>
-                          <li><a href="/profile" className="text-gray-300 hover:text-white">Profil</a></li>
-                          <li><a href="/help" className="text-gray-300 hover:text-white">Yardım</a></li>
+                          <li><Link href="/auth/signin" className="text-gray-300 hover:text-white">Giriş Yap</Link></li>
+                          <li><Link href="/auth/register" className="text-gray-300 hover:text-white">Kayıt Ol</Link></li>
+                          <li><Link href="/profile" className="text-gray-300 hover:text-white">Profil</Link></li>
+                          <li><Link href="/help" className="text-gray-300 hover:text-white">Yardım</Link></li>
                         </ul>
                       </div>
                       <div>

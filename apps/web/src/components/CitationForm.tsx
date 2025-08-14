@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { CitationType } from '@shared/types'
 import { BookOpen, Gavel, ExternalLink, FileText, Plus, X, AlertCircle } from 'lucide-react'
+import { CitationType } from '@/types/citation'
+
+// Citation type options array
+const CITATION_TYPES: CitationType[] = [CitationType.LAW_ARTICLE, CitationType.COURT_CASE, CitationType.EXTERNAL_LINK, CitationType.BOOK, CitationType.ARTICLE]
 
 interface Law {
   id: string
@@ -35,7 +38,7 @@ interface CitationFormProps {
 
 export default function CitationForm({ publicationId, onCitationAdded, onClose }: CitationFormProps) {
   const { user, isAuthenticated } = useAuth()
-  const [type, setType] = useState<CitationType>('LAW_ARTICLE')
+  const [type, setType] = useState<CitationType>(CitationType.LAW_ARTICLE)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
@@ -56,15 +59,15 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (type === 'LAW_ARTICLE') {
+    if (type === CitationType.LAW_ARTICLE) {
       fetchLaws()
-    } else if (type === 'COURT_CASE') {
+    } else if (type === CitationType.COURT_CASE) {
       fetchCases()
     }
   }, [type])
 
   useEffect(() => {
-    if (selectedLawId && type === 'LAW_ARTICLE') {
+    if (selectedLawId && type === CitationType.LAW_ARTICLE) {
       fetchLawArticles(selectedLawId)
     }
   }, [selectedLawId, type])
@@ -123,17 +126,17 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
     }
 
     // Atıf türüne göre gerekli alanları kontrol et
-    if (type === 'LAW_ARTICLE' && !selectedLawArticleId) {
+    if (type === CitationType.LAW_ARTICLE && !selectedLawArticleId) {
       setError('Kanun maddesi seçilmelidir')
       return
     }
 
-    if (type === 'COURT_CASE' && !selectedCaseId) {
+    if (type === CitationType.COURT_CASE && !selectedCaseId) {
       setError('Mahkeme kararı seçilmelidir')
       return
     }
 
-    if (type === 'EXTERNAL_LINK' && !url.trim()) {
+    if (type === CitationType.EXTERNAL_LINK && !url.trim()) {
       setError('URL gereklidir')
       return
     }
@@ -144,19 +147,9 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
     try {
       const citationData: any = {
         type,
-        title: title.trim(),
-        description: description.trim() || null,
-        url: url.trim() || null
-      }
-
-      if (type === 'LAW_ARTICLE') {
-        citationData.lawArticleId = selectedLawArticleId
-        const selectedLaw = laws.find(l => l.id === selectedLawId)
-        if (selectedLaw) {
-          citationData.lawId = selectedLawId
-        }
-      } else if (type === 'COURT_CASE') {
-        citationData.caseId = selectedCaseId
+        reference: title.trim(),
+        description: description.trim() || undefined,
+        url: url.trim() || undefined
       }
 
       const response = await fetch(`/api/publications/${publicationId}/citations`, {
@@ -183,15 +176,15 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
 
   const getTypeIcon = (citationType: CitationType) => {
     switch (citationType) {
-      case 'LAW_ARTICLE':
+      case CitationType.LAW_ARTICLE:
         return <Gavel className="w-4 h-4" />
-      case 'COURT_CASE':
+      case CitationType.COURT_CASE:
         return <BookOpen className="w-4 h-4" />
-      case 'EXTERNAL_LINK':
+      case CitationType.EXTERNAL_LINK:
         return <ExternalLink className="w-4 h-4" />
-      case 'BOOK':
+      case CitationType.BOOK:
         return <BookOpen className="w-4 h-4" />
-      case 'ARTICLE':
+      case CitationType.ARTICLE:
         return <FileText className="w-4 h-4" />
       default:
         return <FileText className="w-4 h-4" />
@@ -200,15 +193,15 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
 
   const getTypeText = (citationType: CitationType) => {
     switch (citationType) {
-      case 'LAW_ARTICLE':
+      case CitationType.LAW_ARTICLE:
         return 'Kanun Maddesi'
-      case 'COURT_CASE':
+      case CitationType.COURT_CASE:
         return 'Mahkeme Kararı'
-      case 'EXTERNAL_LINK':
+      case CitationType.EXTERNAL_LINK:
         return 'Dış Bağlantı'
-      case 'BOOK':
+      case CitationType.BOOK:
         return 'Kitap'
-      case 'ARTICLE':
+      case CitationType.ARTICLE:
         return 'Makale'
       default:
         return 'Diğer'
@@ -251,7 +244,7 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
               Atıf Türü
             </label>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {Object.values(CitationType).map((citationType) => (
+              {CITATION_TYPES.map((citationType) => (
                 <button
                   key={citationType}
                   type="button"
@@ -307,7 +300,7 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
           </div>
 
           {/* Kanun Maddesi Seçimi */}
-          {type === 'LAW_ARTICLE' && (
+          {type === CitationType.LAW_ARTICLE && (
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -359,7 +352,7 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
           )}
 
           {/* Mahkeme Kararı Seçimi */}
-          {type === 'COURT_CASE' && (
+          {type === CitationType.COURT_CASE && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Mahkeme Kararı Seçin *
@@ -381,7 +374,7 @@ export default function CitationForm({ publicationId, onCitationAdded, onClose }
           )}
 
           {/* URL (Dış Bağlantı için) */}
-          {type === 'EXTERNAL_LINK' && (
+          {type === CitationType.EXTERNAL_LINK && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 URL *

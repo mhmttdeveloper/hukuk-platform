@@ -71,7 +71,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const handleLogout = async () => {
-    await signOut({ redirect: false })
+    try {
+      await signOut({ 
+        redirect: true,
+        callbackUrl: '/'
+      })
+    } catch (error) {
+      console.error('Çıkış yapılırken hata:', error)
+      throw error
+    }
   }
 
   const value: AuthContextType = {

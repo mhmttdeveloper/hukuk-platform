@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Citation, CitationType } from '@shared/types'
+import { Citation, CitationType } from '@/types/citation'
 import { BookOpen, Gavel, ExternalLink, FileText, Plus, Trash2, Edit, Eye } from 'lucide-react'
 import CitationForm from './CitationForm'
 
@@ -84,15 +84,15 @@ export default function CitationList({ publicationId, onCitationAdded, showAddBu
 
   const getTypeIcon = (citationType: CitationType) => {
     switch (citationType) {
-      case 'LAW_ARTICLE':
+      case CitationType.LAW_ARTICLE:
         return <Gavel className="w-4 h-4 text-blue-600" />
-      case 'COURT_CASE':
+      case CitationType.COURT_CASE:
         return <BookOpen className="w-4 h-4 text-green-600" />
-      case 'EXTERNAL_LINK':
+      case CitationType.EXTERNAL_LINK:
         return <ExternalLink className="w-4 h-4 text-purple-600" />
-      case 'BOOK':
+      case CitationType.BOOK:
         return <BookOpen className="w-4 h-4 text-orange-600" />
-      case 'ARTICLE':
+      case CitationType.ARTICLE:
         return <FileText className="w-4 h-4 text-red-600" />
       default:
         return <FileText className="w-4 h-4 text-gray-600" />
@@ -101,15 +101,15 @@ export default function CitationList({ publicationId, onCitationAdded, showAddBu
 
   const getTypeText = (citationType: CitationType) => {
     switch (citationType) {
-      case 'LAW_ARTICLE':
+      case CitationType.LAW_ARTICLE:
         return 'Kanun Maddesi'
-      case 'COURT_CASE':
+      case CitationType.COURT_CASE:
         return 'Mahkeme Kararı'
-      case 'EXTERNAL_LINK':
+      case CitationType.EXTERNAL_LINK:
         return 'Dış Bağlantı'
-      case 'BOOK':
+      case CitationType.BOOK:
         return 'Kitap'
-      case 'ARTICLE':
+      case CitationType.ARTICLE:
         return 'Makale'
       default:
         return 'Diğer'
@@ -118,11 +118,11 @@ export default function CitationList({ publicationId, onCitationAdded, showAddBu
 
   const getTypeBadge = (citationType: CitationType) => {
     const colors = {
-      LAW_ARTICLE: 'bg-blue-100 text-blue-800',
-      COURT_CASE: 'bg-green-100 text-green-800',
-      EXTERNAL_LINK: 'bg-purple-100 text-purple-800',
-      BOOK: 'bg-orange-100 text-orange-800',
-      ARTICLE: 'bg-red-100 text-red-800'
+      [CitationType.LAW_ARTICLE]: 'bg-blue-100 text-blue-800',
+      [CitationType.COURT_CASE]: 'bg-green-100 text-green-800',
+      [CitationType.EXTERNAL_LINK]: 'bg-purple-100 text-purple-800',
+      [CitationType.BOOK]: 'bg-orange-100 text-orange-800',
+      [CitationType.ARTICLE]: 'bg-red-100 text-red-800'
     }
 
     return (
@@ -215,7 +215,7 @@ export default function CitationList({ publicationId, onCitationAdded, showAddBu
 
                   {/* Atıf Detayları */}
                   <div className="space-y-2">
-                    {citation.type === 'LAW_ARTICLE' && citation.law && citation.lawArticle && (
+                    {citation.type === CitationType.LAW_ARTICLE && citation.law && citation.lawArticle && (
                       <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
                         <div className="flex items-center space-x-2 mb-2">
                           <Gavel className="w-4 h-4 text-blue-600" />
@@ -236,7 +236,7 @@ export default function CitationList({ publicationId, onCitationAdded, showAddBu
                       </div>
                     )}
 
-                    {citation.type === 'COURT_CASE' && citation.case && (
+                    {citation.type === CitationType.COURT_CASE && citation.case && (
                       <div className="bg-green-50 border border-green-200 rounded-md p-3">
                         <div className="flex items-center space-x-2 mb-2">
                           <BookOpen className="w-4 h-4 text-green-600" />
@@ -251,7 +251,7 @@ export default function CitationList({ publicationId, onCitationAdded, showAddBu
                       </div>
                     )}
 
-                    {citation.type === 'EXTERNAL_LINK' && citation.url && (
+                    {citation.type === CitationType.EXTERNAL_LINK && citation.url && (
                       <div className="bg-purple-50 border border-purple-200 rounded-md p-3">
                         <div className="flex items-center space-x-2">
                           <ExternalLink className="w-4 h-4 text-purple-600" />

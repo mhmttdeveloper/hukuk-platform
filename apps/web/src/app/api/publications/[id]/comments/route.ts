@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { commentSchema } from '@shared/schemas'
+import { z } from 'zod'
+
+// Comment şeması
+const commentSchema = z.object({
+  content: z.string().min(1, 'Yorum boş olamaz').max(1000, 'Yorum çok uzun'),
+  parentId: z.string().optional()
+})
 
 // Yorumları getir
 export async function GET(
@@ -12,16 +17,16 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
+    const limit = parseInt(searchParams.get('limit') || '20')
     const skip = (page - 1) * limit
 
     const comments = await prisma.comment.findMany({
       where: {
         publicationId: params.id,
-        status: 'APPROVED'
+        parentId: null // Sadece üst seviye yorumlar
       },
       include: {
-        user: {
+        author: {
           select: {
             id: true,
             name: true,
@@ -29,11 +34,22 @@ export async function GET(
             profession: true,
             verifiedStatus: true
           }
+        },
+        replies: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                surname: true,
+                profession: true
+              }
+            }
+          },
+          orderBy: { createdAt: 'asc' }
         }
       },
-      orderBy: {
-        createdAt: 'desc'
-      },
+      orderBy: { createdAt: 'desc' },
       skip,
       take: limit
     })
@@ -41,7 +57,7 @@ export async function GET(
     const total = await prisma.comment.count({
       where: {
         publicationId: params.id,
-        status: 'APPROVED'
+        parentId: null
       }
     })
 
@@ -63,13 +79,13 @@ export async function GET(
   }
 }
 
-// Yeni yorum ekle
+// Yorum ekle
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -79,7 +95,7 @@ export async function POST(
     }
 
     const body = await request.json()
-    const validatedData = commentSchema.parse(body)
+    const { content, parentId } = commentSchema.parse(body)
 
     // Yayının var olup olmadığını kontrol et
     const publication = await prisma.publication.findUnique({
@@ -93,35 +109,36 @@ export async function POST(
       )
     }
 
-    // Kullanıcının daha önce yorum yapıp yapmadığını kontrol et
-    const existingComment = await prisma.comment.findFirst({
-      where: {
-        publicationId: params.id,
-        userId: session.user.id
-      }
-    })
+    // Parent yorum varsa, onun var olup olmadığını kontrol et
+    if (parentId) {
+      const parentComment = await prisma.comment.findUnique({
+        where: { id: parentId }
+      })
 
-    if (existingComment) {
-      return NextResponse.json(
-        { error: 'Bu yayına zaten yorum yapmışsınız' },
-        { status: 400 }
-      )
+      if (!parentComment) {
+        return NextResponse.json(
+          { error: 'Üst yorum bulunamadı' },
+          { status: 404 }
+        )
+      }
     }
 
     const comment = await prisma.comment.create({
       data: {
-        content: validatedData.content,
+        content,
         publicationId: params.id,
-        userId: session.user.id,
-        status: 'PENDING' // Admin onayı gerekli
+        authorId: session.user.id,
+        parentId: parentId || null,
+        status: session.user.role === 'ADMIN' || session.user.role === 'EDITOR' ? 'APPROVED' : 'PENDING'
       },
       include: {
-        user: {
+        author: {
           select: {
             id: true,
             name: true,
             surname: true,
-            profession: true
+            profession: true,
+            verifiedStatus: true
           }
         }
       }

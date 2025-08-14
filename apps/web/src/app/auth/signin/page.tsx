@@ -35,12 +35,12 @@ export default function SignInPage() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Hesabınıza giriş yapın
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Veya{' '}
-            <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
-              yeni hesap oluşturun
-            </Link>
-          </p>
+                      <p className="mt-2 text-center text-sm text-gray-600">
+              Veya{' '}
+              <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+                yeni hesap oluşturun
+              </Link>
+            </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

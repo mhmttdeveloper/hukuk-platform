@@ -1,52 +1,46 @@
 'use client';
 
-import { Moon, Sun, Monitor } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ThemeToggle() {
   // Geçici olarak hata durumunda fallback
-  let theme = 'system';
+  let theme = 'light';
   let setTheme = () => {};
-  let resolvedTheme = 'light';
-
+  
   try {
     const themeContext = useTheme();
     theme = themeContext.theme;
     setTheme = themeContext.setTheme;
-    resolvedTheme = themeContext.resolvedTheme;
   } catch (error) {
     console.warn('Theme context not available:', error);
-    // Fallback değerler kullanılıyor
   }
 
-  const themes = [
-    { value: 'light', label: 'Açık', icon: Sun },
-    { value: 'dark', label: 'Koyu', icon: Moon },
-    { value: 'system', label: 'Sistem', icon: Monitor },
-  ] as const;
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+  };
+
+  const isDark = theme === 'dark';
 
   return (
-    <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-      {themes.map(({ value, label, icon: Icon }) => {
-        const isActive = theme === value;
-        const IconComponent = Icon;
-        
-        return (
-          <button
-            key={value}
-            onClick={() => setTheme(value)}
-            className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-              isActive
-                ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            }`}
-            title={`${label} tema`}
-          >
-            <IconComponent className="h-4 w-4" />
-            <span className="hidden sm:inline">{label}</span>
-          </button>
-        );
-      })}
-    </div>
+    <button
+      onClick={toggleTheme}
+      className="relative inline-flex h-10 w-20 items-center rounded-full bg-gray-200 dark:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+      title={isDark ? 'Açık temaya geç' : 'Koyu temaya geç'}
+      aria-label={isDark ? 'Açık temaya geç' : 'Koyu temaya geç'}
+    >
+      <span
+        className={`inline-block h-8 w-8 transform rounded-full bg-white shadow-lg transition-transform duration-200 ${
+          isDark ? 'translate-x-10' : 'translate-x-1'
+        }`}
+      />
+      <Sun className={`absolute left-1 h-6 w-6 text-yellow-500 transition-opacity duration-200 ${
+        isDark ? 'opacity-0' : 'opacity-100'
+      }`} />
+      <Moon className={`absolute right-1 h-6 w-6 text-blue-500 transition-opacity duration-200 ${
+        isDark ? 'opacity-100' : 'opacity-0'
+      }`} />
+    </button>
   );
 }

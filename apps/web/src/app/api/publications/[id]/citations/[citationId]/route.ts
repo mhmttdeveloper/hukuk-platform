@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { updateCitationSchema } from '@shared/schemas'
+import { z } from 'zod'
 
 // Tekil atıfı getir
 export async function GET(
@@ -64,7 +63,7 @@ export async function PUT(
   { params }: { params: { id: string; citationId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -81,6 +80,13 @@ export async function PUT(
       )
     }
 
+    const updateCitationSchema = z.object({
+      type: z.enum(['LAW_ARTICLE', 'COURT_CASE', 'EXTERNAL_LINK', 'BOOK', 'OTHER']),
+      reference: z.string().min(1, 'Referans boş olamaz'),
+      description: z.string().optional(),
+      url: z.string().url().optional()
+    })
+    
     const body = await request.json()
     const validatedData = updateCitationSchema.parse(body)
 
@@ -139,7 +145,7 @@ export async function DELETE(
   { params }: { params: { id: string; citationId: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id) {
       return NextResponse.json(

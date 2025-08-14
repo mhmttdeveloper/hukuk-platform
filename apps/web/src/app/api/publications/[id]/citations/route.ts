@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { createCitationSchema } from '@shared/schemas'
+import { z } from 'zod'
+import { CitationType } from '@/types/citation'
 
 // Yayındaki atıfları getir
 export async function GET(
@@ -59,7 +59,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -77,6 +77,13 @@ export async function POST(
     }
 
     const body = await request.json()
+    const createCitationSchema = z.object({
+      type: z.nativeEnum(CitationType),
+      reference: z.string().min(1, 'Referans boş olamaz'),
+      description: z.string().optional(),
+      url: z.string().url().optional()
+    })
+    
     const validatedData = createCitationSchema.parse(body)
 
     // Yayının var olup olmadığını kontrol et
@@ -88,21 +95,6 @@ export async function POST(
       return NextResponse.json(
         { error: 'Yayın bulunamadı' },
         { status: 404 }
-      )
-    }
-
-    // Atıf türüne göre gerekli alanları kontrol et
-    if (validatedData.type === 'LAW_ARTICLE' && !validatedData.lawArticleId) {
-      return NextResponse.json(
-        { error: 'Kanun maddesi seçilmelidir' },
-        { status: 400 }
-      )
-    }
-
-    if (validatedData.type === 'COURT_CASE' && !validatedData.caseId) {
-      return NextResponse.json(
-        { error: 'Mahkeme kararı seçilmelidir' },
-        { status: 400 }
       )
     }
 
