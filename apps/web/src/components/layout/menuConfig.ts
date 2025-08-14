@@ -53,39 +53,39 @@ export const menuConfig: MenuGroup[] = [
       {
         name: 'Yayın Yönetimi',
         icon: FileText,
-        exists: false,
+        exists: true,
         roles: ['admin', 'editor'],
         subItems: [
-          { name: 'Tüm Yayınlar', href: '/admin/publications', exists: false },
-          { name: 'Yeni Yayın Ekle', href: '/admin/publications/new', exists: false },
-          { name: 'Bekleyen Onaylar', href: '/admin/publications/pending', exists: false, badge: '5' }
+          { name: 'Tüm Yayınlar', href: '/admin/publications', exists: true },
+          { name: 'Yeni Yayın Ekle', href: '/admin/publications/new', exists: true },
+          { name: 'Bekleyen Onaylar', href: '/admin/publications/pending', exists: true, badge: '5' }
         ]
       },
       {
-        name: 'Kanun Yönetimi',
+        name: 'Mevzuat Yönetimi',
         icon: BookOpen,
-        exists: false,
-        roles: ['admin'],
+        exists: true,
+        roles: ['admin', 'editor'],
         subItems: [
-          { name: 'Tüm Kanunlar', href: '/admin/laws', exists: false },
-          { name: 'Kanun Ekle', href: '/admin/laws/new', exists: false }
+          { name: 'Tüm Mevzuat', href: '/admin/legislation', exists: true },
+          { name: 'Mevzuat Ekle', href: '/admin/legislation/new', exists: true }
         ]
       },
       {
-        name: 'Dava Yönetimi',
+        name: 'İçtihat Yönetimi',
         icon: Gavel,
-        exists: false,
-        roles: ['admin'],
+        exists: true,
+        roles: ['admin', 'editor'],
         subItems: [
-          { name: 'Tüm Davalar', href: '/admin/cases', exists: false },
-          { name: 'Yeni Dava Ekle', href: '/admin/cases/new', exists: false }
+          { name: 'Tüm İçtihatlar', href: '/admin/jurisprudence', exists: true },
+          { name: 'İçtihat Ekle', href: '/admin/jurisprudence/new', exists: true }
         ]
       },
       {
         name: 'Yorum Yönetimi',
         icon: MessageSquare,
         href: '/admin/comments',
-        exists: false,
+        exists: true,
         roles: ['admin', 'editor'],
         badge: '12'
       }
@@ -138,22 +138,22 @@ export const menuConfig: MenuGroup[] = [
       {
         name: 'İstatistikler',
         icon: BarChart3,
-        href: '/admin/analytics',
-        exists: false,
+        href: '/admin/statistics',
+        exists: true,
         roles: ['admin', 'editor']
       },
       {
         name: 'Sistem Ayarları',
         icon: Settings,
         href: '/admin/settings',
-        exists: false,
+        exists: true,
         roles: ['admin']
       },
       {
         name: 'Veritabanı',
         icon: Database,
         href: '/admin/database',
-        exists: false,
+        exists: true,
         roles: ['admin']
       }
     ]

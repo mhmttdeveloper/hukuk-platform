@@ -333,7 +333,7 @@
   - [x] Cache mekanizması (1 yıl)
 
 - [x] **Frontend Entegrasyonu**
-  - [x] OGImagePreview bileşeni
+  
   - [x] Yayın oluşturma sayfasına entegrasyon
   - [x] Yayın düzenleme sayfasına entegrasyon
   - [x] Demo sayfası
@@ -349,17 +349,12 @@
 - `packages/shared/src/types/index.ts` - OG görsel tipleri eklendi
 - `packages/shared/src/utils.ts` - Şablon ve metin işleme fonksiyonları
 - `src/app/api/og-image/route.ts` - OG görsel üretim API'si
-- `src/components/OGImagePreview.tsx` - OG görsel önizleme bileşeni
-- `src/app/og-demo/page.tsx` - Demo sayfası
-- `src/app/publications/new/page.tsx` - OG görsel entegrasyonu
-- `src/app/publications/[id]/edit/page.tsx` - OG görsel entegrasyonu
+
+
+
 
 #### Beklenen Çıktılar:
-- ✅ Sosyal medya görsel üretimi
-- ✅ API endpoint'leri
-- ✅ Görsel şablon sistemi
-- ✅ Cache optimizasyonu
-- ✅ Frontend entegrasyonu
+
 
 ---
 
@@ -444,7 +439,7 @@
 
 ---
 
-### **🔟 FAZ 10: DEPLOY & PRODUCTION** 🚀
+### **🔟 FAZ 9: DEPLOY & PRODUCTION** 🚀
 
 **Durum:** 📅 Planlanıyor  
 **Tahmini Süre:** 1 hafta  
@@ -479,8 +474,8 @@
 
 ## 📊 Proje Durumu
 
-### **Tamamlanan Fazlar:** 8/10 (80%)
-### **Güncel Versiyon:** 8.0
+### **Tamamlanan Fazlar:** 7/9 (78%)
+### **Güncel Versiyon:** 7.0
 ### **Tahmini Tamamlanma:** Eylül 2024
 
 ### **Tamamlanan Özellikler:**
@@ -490,7 +485,7 @@
 - ✅ Yorum ve puanlama sistemi
 - ✅ Atıf sistemi (manuel)
 - ✅ Kanun & karar sistemi (dosya yükleme, otomatik parçalama)
-- ✅ OG görsel üretimi (sosyal medya şablonları)
+
 - ✅ Tema sistemi (dark/light mode)
 - ✅ Reklam sistemi (pozisyon bazlı gösterim)
 
@@ -503,16 +498,13 @@
 
 ## 🎯 Sonraki Adımlar
 
-### **FAZ 7: OG GÖRSEL ÜRETİMİ** ✅ TAMAMLANDI
-- ✅ Sosyal medya görsel şablonları
-- ✅ Dinamik görsel oluşturma API'si
-- ✅ Cache ve optimizasyon
 
-### **FAZ 8: TEMA & REKLAMLAR** ✅ TAMAMLANDI
+
+### **FAZ 7: TEMA & REKLAMLAR** ✅ TAMAMLANDI
 - ✅ Dark/light mode sistemi
 - ✅ Reklam entegrasyonu
 
-### **FAZ 9: TEST & OPTİMİZASYON** 🧪
+### **FAZ 8: TEST & OPTİMİZASYON** 🧪
 - Backend ve frontend testleri
 - Performans optimizasyonu
 - Kullanıcı deneyimi iyileştirmeleri
@@ -522,7 +514,7 @@
 - Performans optimizasyonu
 - Kalite güvencesi
 
-### **FAZ 10: DEPLOY & PRODUCTION**
+### **FAZ 9: DEPLOY & PRODUCTION**
 - Production ortamı kurulumu
 - Monitoring ve backup
 - Deployment dokümantasyonu
@@ -537,7 +529,7 @@
 - ✅ Prisma ORM ile veritabanı yönetimi
 - ✅ Next.js 15 ile modern web teknolojileri
 - ✅ Responsive ve kullanıcı dostu arayüz
-- ✅ SVG + Sharp.js ile dinamik görsel üretimi
+
 
 ### **İş Gereksinimleri:**
 - ✅ Hukukçulara özel platform
@@ -545,7 +537,7 @@
 - ✅ Atıf ve referans sistemi
 - ✅ Kanun ve karar kütüphanesi
 - ✅ Kullanıcı etkileşim araçları
-- ✅ Sosyal medya paylaşım görselleri
+
 
 ### **Gelecek Genişletme:**
 - ✅ Sosyal ağ özellikleri için hazır altyapı

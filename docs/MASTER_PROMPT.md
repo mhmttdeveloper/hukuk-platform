@@ -161,15 +161,11 @@ Tüm geliştirme sürecini modüler şekilde planla ve sırayla uygula. Her mod�
 - Her maddeye özel URL.
 - Tüm kanun listesi sayfası.
 
-### 8️⃣ OG Görsel Üretimi
-- Dinamik şablon sistemi.
-- API route ile görsel oluşturma.
-
-### 9️⃣ Tema & Reklamlar
+### 8️⃣ Tema & Reklamlar
 - Dark/light switch.
 - Mobil uyumlu reklam bileşenleri.
 
-### 🔟 Deploy
+### 9️⃣ Deploy
 - Vercel + Railway/Fly.io/Render.
 
 ---

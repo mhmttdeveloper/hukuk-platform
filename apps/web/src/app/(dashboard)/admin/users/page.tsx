@@ -1,204 +1,411 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Search, Filter, Plus, Eye, Edit, Trash2, User, Mail, Calendar, Shield, MoreHorizontal, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
+import { 
+  Users, Search, Filter, Eye, Edit, Trash2, Shield, UserCheck, 
+  UserX, Mail, Calendar, Building, CheckCircle, XCircle, AlertCircle, Clock
+} from 'lucide-react'
 
-interface UserData {
+interface User {
   id: string
   name: string
   surname: string
   email: string
-  role: string
-  verifiedStatus: string
+  role: 'admin' | 'editor' | 'author' | 'member'
+  profession: string
+  verifiedStatus: 'verified' | 'pending' | 'rejected'
+  status: 'active' | 'inactive' | 'suspended'
   createdAt: string
-  profession?: string
-  bio?: string
+  lastLogin: string
+  publicationsCount: number
+  commentsCount: number
 }
 
-export default function UserManagementPage() {
-  const { user, isAdmin } = useAuth()
-  const [users, setUsers] = useState<UserData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedRole, setSelectedRole] = useState('Tümü')
-  const [selectedStatus, setSelectedStatus] = useState('Tümü')
+const mockUsers: User[] = [
+  {
+    id: '1',
+    name: 'Ahmet',
+    surname: 'Yılmaz',
+    email: 'ahmet.yilmaz@example.com',
+    role: 'admin',
+    profession: 'Avukat',
+    verifiedStatus: 'verified',
+    status: 'active',
+    createdAt: '2024-01-15',
+    lastLogin: '2024-08-14',
+    publicationsCount: 25,
+    commentsCount: 150
+  },
+  {
+    id: '2',
+    name: 'Fatma',
+    surname: 'Demir',
+    email: 'fatma.demir@example.com',
+    role: 'editor',
+    profession: 'Hakim',
+    verifiedStatus: 'verified',
+    status: 'active',
+    createdAt: '2024-02-20',
+    lastLogin: '2024-08-13',
+    publicationsCount: 18,
+    commentsCount: 89
+  },
+  {
+    id: '3',
+    name: 'Mehmet',
+    surname: 'Kaya',
+    email: 'mehmet.kaya@example.com',
+    role: 'author',
+    profession: 'Avukat',
+    verifiedStatus: 'verified',
+    status: 'active',
+    createdAt: '2024-03-10',
+    lastLogin: '2024-08-12',
+    publicationsCount: 12,
+    commentsCount: 67
+  },
+  {
+    id: '4',
+    name: 'Zeynep',
+    surname: 'Özkan',
+    email: 'zeynep.ozkan@example.com',
+    role: 'author',
+    profession: 'Avukat',
+    verifiedStatus: 'pending',
+    status: 'active',
+    createdAt: '2024-04-05',
+    lastLogin: '2024-08-10',
+    publicationsCount: 3,
+    commentsCount: 23
+  },
+  {
+    id: '5',
+    name: 'Ali',
+    surname: 'Yıldız',
+    email: 'ali.yildiz@example.com',
+    role: 'member',
+    profession: 'Öğrenci',
+    verifiedStatus: 'rejected',
+    status: 'suspended',
+    createdAt: '2024-05-12',
+    lastLogin: '2024-07-25',
+    publicationsCount: 0,
+    commentsCount: 5
+  }
+]
 
-  const roles = ['Tümü', 'Admin', 'Editor', 'Author', 'Member']
-  const statuses = ['Tümü', 'Verified', 'Pending', 'Rejected']
+export default function AdminUsersPage() {
+  const { user, isAuthenticated, isAdmin } = useAuth()
+  const router = useRouter()
+  const [users, setUsers] = useState<User[]>(mockUsers)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [roleFilter, setRoleFilter] = useState<string>('all')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [verifiedFilter, setVerifiedFilter] = useState<string>('all')
 
   useEffect(() => {
-    // Mock data for demonstration
-    const mockUsers: UserData[] = [
-      {
-        id: '1',
-        name: 'Test',
-        surname: 'Admin',
-        email: 'admin@test.com',
-        role: 'Admin',
-        verifiedStatus: 'Verified',
-        createdAt: '2024-01-15',
-        profession: 'Hukuk Profesörü',
-        bio: 'Test admin kullanıcısı'
-      },
-      {
-        id: '2',
-        name: 'Test',
-        surname: 'Editor',
-        email: 'editor@test.com',
-        role: 'Editor',
-        verifiedStatus: 'Verified',
-        createdAt: '2024-01-16',
-        profession: 'Avukat',
-        bio: 'Test editör kullanıcısı'
-      },
-      {
-        id: '3',
-        name: 'Test',
-        surname: 'Author',
-        email: 'author@test.com',
-        role: 'Author',
-        verifiedStatus: 'Verified',
-        createdAt: '2024-01-17',
-        profession: 'Hukuk Danışmanı',
-        bio: 'Test yazar kullanıcısı'
-      }
-    ]
-
-    setTimeout(() => {
-      setUsers(mockUsers)
-      setIsLoading(false)
-    }, 1000)
-  }, [])
-
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesRole = selectedRole === 'Tümü' || user.role === selectedRole
-    const matchesStatus = selectedStatus === 'Tümü' || user.verifiedStatus === selectedStatus
-
-    return matchesSearch && matchesRole && matchesStatus
-  })
-
-  const getRoleBadge = (role: string) => {
-    const roleColors = {
-      'Admin': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      'Editor': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      'Author': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      'Member': 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+    if (isAuthenticated && !isAdmin) {
+      router.push('/dashboard')
     }
-    return roleColors[role as keyof typeof roleColors] || roleColors['Member']
-  }
+  }, [isAuthenticated, isAdmin, router])
 
-  const getStatusBadge = (status: string) => {
-    const statusColors = {
-      'Verified': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      'Pending': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      'Rejected': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-    }
-    return statusColors[status as keyof typeof statusColors] || statusColors['Pending']
-  }
-
-  const handleDeleteUser = async (userId: string) => {
-    if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
-      try {
-        // API call would go here
-        setUsers(users.filter(user => user.id !== userId))
-        console.log('Kullanıcı silindi:', userId)
-      } catch (error) {
-        console.error('Kullanıcı silinirken hata:', error)
-      }
-    }
-  }
-
-  if (!isAdmin) {
-    return null
-  }
-
-  if (isLoading) {
+  if (!isAuthenticated || !isAdmin) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors duration-200">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Kullanıcılar yükleniyor...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Yetkilendirme kontrol ediliyor...</p>
         </div>
       </div>
     )
   }
 
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter
+    const matchesStatus = statusFilter === 'all' || user.status === statusFilter
+    const matchesVerified = verifiedFilter === 'all' || user.verifiedStatus === verifiedFilter
+    
+    return matchesSearch && matchesRole && matchesStatus && matchesVerified
+  })
+
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return <Shield className="w-4 h-4 text-red-600" />
+      case 'editor':
+        return <UserCheck className="w-4 h-4 text-blue-600" />
+      case 'author':
+        return <Edit className="w-4 h-4 text-green-600" />
+      case 'member':
+        return <Users className="w-4 h-4 text-gray-600" />
+      default:
+        return <Users className="w-4 h-4 text-gray-600" />
+    }
+  }
+
+  const getRoleText = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'Yönetici'
+      case 'editor':
+        return 'Editör'
+      case 'author':
+        return 'Yazar'
+      case 'member':
+        return 'Üye'
+      default:
+        return 'Bilinmiyor'
+    }
+  }
+
+  const getRoleBadgeClass = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'bg-red-100 text-red-800 border-red-200'
+      case 'editor':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'author':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'member':
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="w-4 h-4 text-green-600" />
+      case 'inactive':
+        return <XCircle className="w-4 h-4 text-gray-600" />
+      case 'suspended':
+        return <AlertCircle className="w-4 h-4 text-red-600" />
+      default:
+        return <AlertCircle className="w-4 h-4 text-gray-600" />
+    }
+  }
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'Aktif'
+      case 'inactive':
+        return 'Pasif'
+      case 'suspended':
+        return 'Askıya Alındı'
+      default:
+        return 'Bilinmiyor'
+    }
+  }
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'inactive':
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'suspended':
+        return 'bg-red-100 text-red-800 border-red-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const getVerifiedStatusIcon = (status: string) => {
+    switch (status) {
+      case 'verified':
+        return <CheckCircle className="w-4 h-4 text-green-600" />
+      case 'pending':
+        return <Clock className="w-4 h-4 text-yellow-600" />
+      case 'rejected':
+        return <XCircle className="w-4 h-4 text-red-600" />
+      default:
+        return <AlertCircle className="w-4 h-4 text-gray-600" />
+    }
+  }
+
+  const getVerifiedStatusText = (status: string) => {
+    switch (status) {
+      case 'verified':
+        return 'Doğrulandı'
+      case 'pending':
+        return 'Beklemede'
+      case 'rejected':
+        return 'Reddedildi'
+      default:
+        return 'Bilinmiyor'
+    }
+  }
+
+  const getVerifiedStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'verified':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      case 'rejected':
+        return 'bg-red-100 text-red-800 border-red-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const handleView = (id: string) => {
+    router.push(`/admin/users/${id}`)
+  }
+
+  const handleEdit = (id: string) => {
+    router.push(`/admin/users/${id}/edit`)
+  }
+
+  const handleDelete = (id: string) => {
+    if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+      setUsers(prev => prev.filter(user => user.id !== id))
+    }
+  }
+
+  const handleVerify = (id: string) => {
+    setUsers(prev => prev.map(user => 
+      user.id === id ? { ...user, verifiedStatus: 'verified' as const } : user
+    ))
+  }
+
+  const handleSuspend = (id: string) => {
+    setUsers(prev => prev.map(user => 
+      user.id === id ? { ...user, status: 'suspended' as const } : user
+    ))
+  }
+
+  const stats = {
+    total: users.length,
+    admins: users.filter(u => u.role === 'admin').length,
+    editors: users.filter(u => u.role === 'editor').length,
+    authors: users.filter(u => u.role === 'author').length,
+    members: users.filter(u => u.role === 'member').length,
+    verified: users.filter(u => u.verifiedStatus === 'verified').length,
+    pending: users.filter(u => u.verifiedStatus === 'pending').length,
+    active: users.filter(u => u.status === 'active').length,
+    suspended: users.filter(u => u.status === 'suspended').length
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Kullanıcı Yönetimi</h1>
-            <p className="mt-2 text-gray-600 dark:text-gray-300">Sistem kullanıcılarını yönetin ve izleyin</p>
-          </div>
-          <Link
-            href="/admin/users/new"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Yeni Kullanıcı
-          </Link>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Kullanıcı Yönetimi
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Tüm kullanıcıları yönetin, rollerini düzenleyin ve durumlarını kontrol edin
+          </p>
+        </div>
+        <button
+          onClick={() => router.push('/admin/users/new')}
+          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <Users className="w-4 h-4" />
+          <span>Yeni Kullanıcı</span>
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Toplam</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-red-600">{stats.admins}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Yönetici</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-blue-600">{stats.editors}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Editör</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-green-600">{stats.authors}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Yazar</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-gray-600">{stats.members}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Üye</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-green-600">{stats.verified}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Doğrulanmış</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Beklemede</div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="text-2xl font-bold text-red-600">{stats.suspended}</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">Askıya Alınan</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8 border border-gray-200 dark:border-gray-700 transition-colors">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Kullanıcı ara..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Kullanıcı adı, soyadı veya e-posta ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+            </div>
           </div>
-
-          {/* Role Filter */}
-          <div>
+          <div className="flex gap-2">
             <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              {roles.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
+              <option value="all">Tüm Roller</option>
+              <option value="admin">Yönetici</option>
+              <option value="editor">Editör</option>
+              <option value="author">Yazar</option>
+              <option value="member">Üye</option>
             </select>
-          </div>
-
-          {/* Status Filter */}
-          <div>
             <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              {statuses.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
+              <option value="all">Tüm Durumlar</option>
+              <option value="active">Aktif</option>
+              <option value="inactive">Pasif</option>
+              <option value="suspended">Askıya Alınan</option>
+            </select>
+            <select
+              value={verifiedFilter}
+              onChange={(e) => setVerifiedFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+            >
+              <option value="all">Tüm Doğrulama</option>
+              <option value="verified">Doğrulanmış</option>
+              <option value="pending">Beklemede</option>
+              <option value="rejected">Reddedildi</option>
             </select>
           </div>
         </div>
       </div>
 
       {/* Users Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700 transition-colors">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -211,7 +418,13 @@ export default function UserManagementPage() {
                   Durum
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Kayıt Tarihi
+                  Doğrulama
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  İstatistikler
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Tarih
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   İşlemler
@@ -220,12 +433,14 @@ export default function UserManagementPage() {
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                          <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                        <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                          <span className="text-sm font-medium text-white">
+                            {user.name.charAt(0)}{user.surname.charAt(0)}
+                          </span>
                         </div>
                       </div>
                       <div className="ml-4">
@@ -235,47 +450,80 @@ export default function UserManagementPage() {
                         <div className="text-sm text-gray-500 dark:text-gray-400">
                           {user.email}
                         </div>
-                        {user.profession && (
-                          <div className="text-xs text-gray-400 dark:text-gray-500">
-                            {user.profession}
-                          </div>
-                        )}
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                          {user.profession}
+                        </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}>
-                      {user.role}
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRoleBadgeClass(user.role)}`}>
+                      {getRoleIcon(user.role)}
+                      <span className="ml-1">{getRoleText(user.role)}</span>
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(user.verifiedStatus)}`}>
-                      {user.verifiedStatus === 'Verified' && <CheckCircle className="w-3 h-3 mr-1" />}
-                      {user.verifiedStatus === 'Pending' && <Clock className="w-3 h-3 mr-1" />}
-                      {user.verifiedStatus === 'Rejected' && <XCircle className="w-3 h-3 mr-1" />}
-                      {user.verifiedStatus}
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadgeClass(user.status)}`}>
+                      {getStatusIcon(user.status)}
+                      <span className="ml-1">{getStatusText(user.status)}</span>
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getVerifiedStatusBadgeClass(user.verifiedStatus)}`}>
+                      {getVerifiedStatusIcon(user.verifiedStatus)}
+                      <span className="ml-1">{getVerifiedStatusText(user.verifiedStatus)}</span>
+                    </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <Link
-                        href={`/admin/users/${user.id}`}
-                        className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900 dark:text-white">
+                      <div>📝 {user.publicationsCount} yayın</div>
+                      <div>💬 {user.commentsCount} yorum</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900 dark:text-white">
+                      <div>Kayıt: {new Date(user.createdAt).toLocaleDateString('tr-TR')}</div>
+                      <div>Son giriş: {new Date(user.lastLogin).toLocaleDateString('tr-TR')}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleView(user.id)}
+                        className="p-2 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-lg"
+                        title="Görüntüle"
                       >
                         <Eye className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href={`/admin/users/${user.id}/edit`}
-                        className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                      </button>
+                      <button
+                        onClick={() => handleEdit(user.id)}
+                        className="p-2 text-green-600 hover:bg-green-100 dark:hover:bg-green-900 rounded-lg"
+                        title="Düzenle"
                       >
                         <Edit className="w-4 h-4" />
-                      </Link>
+                      </button>
+                      {user.verifiedStatus === 'pending' && (
+                        <button
+                          onClick={() => handleVerify(user.id)}
+                          className="p-2 text-green-600 hover:bg-green-100 dark:hover:bg-green-900 rounded-lg"
+                          title="Doğrula"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
+                      )}
+                      {user.status === 'active' && (
+                        <button
+                          onClick={() => handleSuspend(user.id)}
+                          className="p-2 text-yellow-600 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-lg"
+                          title="Askıya Al"
+                        >
+                          <UserX className="w-4 h-4" />
+                        </button>
+                      )}
                       <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                        onClick={() => handleDelete(user.id)}
+                        className="p-2 text-red-600 hover:bg-red-100 dark:hover:bg-red-900 rounded-lg"
+                        title="Sil"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -288,10 +536,9 @@ export default function UserManagementPage() {
         </div>
       </div>
 
-      {/* Empty State */}
       {filteredUsers.length === 0 && (
         <div className="text-center py-12">
-          <User className="mx-auto h-12 w-12 text-gray-400" />
+          <Users className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">Kullanıcı bulunamadı</h3>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Arama kriterlerinize uygun kullanıcı bulunamadı.

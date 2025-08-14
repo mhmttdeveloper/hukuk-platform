@@ -149,7 +149,7 @@ npm run docker:down      # Servisleri durdur
 
 ### 📅 Planlanan
 - [ ] Kanun & karar sistemi
-- [ ] OG görsel üretimi
+
 - [ ] Tema & reklamlar
 - [ ] Deploy
 
