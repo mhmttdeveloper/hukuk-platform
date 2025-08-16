@@ -2,14 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
-import { UserRole, VerificationStatus } from '@prisma/client'
 
 interface User {
   id: string
   email: string
   name: string
-  role: UserRole
-  verifiedStatus: VerificationStatus
+  role: string
+  verifiedStatus: string
   profession: string
 }
 

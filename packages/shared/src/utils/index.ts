@@ -1,4 +1,4 @@
-// Utility functions for Hukuk Platformu
+// Utility functions for YargıTam
 
 /**
  * Generate a URL-friendly slug from a string

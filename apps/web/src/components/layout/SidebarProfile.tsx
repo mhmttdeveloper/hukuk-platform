@@ -30,7 +30,7 @@ export function SidebarProfile({ onLogout }: SidebarProfileProps) {
   if (!user) return null
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-700 p-4">
+    <div className="p-4">
       {/* Profile Header */}
       <div className="flex items-center space-x-3 mb-3">
         <div className="flex-shrink-0">

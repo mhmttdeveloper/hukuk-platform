@@ -150,7 +150,7 @@ export default function HelpPage() {
   const handleContactAction = (method: ContactMethod) => {
     switch (method.type) {
       case 'email':
-        window.open(`mailto:${method.value}?subject=Hukuk Platformu Yardım Talebi`, '_blank')
+        window.open(`mailto:${method.value}?subject=YargıTam Yardım Talebi`, '_blank')
         break
       case 'phone':
         window.open(`tel:${method.value}`, '_blank')
@@ -165,9 +165,9 @@ export default function HelpPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          Yardım Merkezi
-        </h1>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          YargıTam Merkezi
+        </h2>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
           Sık sorulan sorular, kullanım kılavuzları ve destek kanalları
         </p>

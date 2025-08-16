@@ -1,4 +1,4 @@
-# 🏛️ Hukuk Platformu
+# 🏛️ YargıTam
 
 Hukukçulara özel, SEO uyumlu yayın platformu. İlk fazda yayınlar, yorumlar, puanlama ve kanun/yargıtay karar kütüphanesi özellikleri bulunmaktadır.
 
@@ -32,6 +32,14 @@ Hukukçulara özel, SEO uyumlu yayın platformu. İlk fazda yayınlar, yorumlar,
 - Baro e-posta doğrulama
 - Manuel onay sistemi
 
+### 🎨 **YENİ: Gelişmiş UI/UX Sistemi** 🆕
+- **Responsive Sidebar:** Her ekran boyutunda açılabilir sidebar
+- **Sticky Header:** Scroll sırasında görünür kalan header
+- **Dark Mode:** Tam responsive dark mode toggle
+- **Mobile-First:** 768px breakpoint'te optimize edilmiş davranış
+- **Smooth Animasyonlar:** Tüm geçişlerde smooth transitions
+- **Ziyaretçi Modu:** Ayrı sidebar sistemi (mobilde)
+
 ## 🏗️ Teknoloji Stack
 
 - **Frontend:** Next.js 15 (App Router), TypeScript, TailwindCSS
@@ -43,13 +51,26 @@ Hukukçulara özel, SEO uyumlu yayın platformu. İlk fazda yayınlar, yorumlar,
 - **Editor:** Tiptap
 - **Containerization:** Docker + Docker Compose
 
-## 📁 Proje Yapısı
+## �� Proje Yapısı
 
 ```
-hukuk-platformu/
+yargi-tam/
 ├── apps/
 │   └── web/                 # Next.js web uygulaması
 │       ├── src/             # Kaynak kodlar
+│       │   ├── app/         # App Router
+│       │   │   ├── (public)/    # Ziyaretçi sayfaları
+│       │   │   ├── (dashboard)/ # Kullanıcı sayfaları
+│       │   │   └── api/         # API routes
+│       │   ├── components/  # React component'leri
+│       │   │   ├── layout/      # Layout component'leri
+│       │   │   │   ├── Navbar.tsx       # Responsive header
+│       │   │   │   ├── Sidebar.tsx      # User mode sidebar
+│       │   │   │   └── VisitorSidebar.tsx # Visitor mode sidebar
+│       │   │   └── ...
+│       │   ├── contexts/    # React context'leri
+│       │   ├── lib/         # Utility fonksiyonları
+│       │   └── types/       # TypeScript tip tanımları
 │       ├── prisma/          # Veritabanı şeması
 │       └── package.json
 ├── packages/
@@ -123,10 +144,10 @@ npm run docker:down      # Servisleri durdur
 ## 🌐 Erişim Bilgileri
 
 ### Web Uygulaması
-- **URL:** http://localhost:3000
-- **Admin:** admin@hukuk-platformu.com / admin123
-- **Editör:** editor@hukuk-platformu.com / editor123
-- **Yazar:** author@hukuk-platformu.com / author123
+- **URL:** http://localhost:3000 (veya otomatik port)
+- **Admin:** admin@test / admin123
+- **Editör:** editor@test / editor123
+- **Yazar:** author@test / author123
 
 ### Servisler
 - **PostgreSQL:** localhost:5432
@@ -140,6 +161,10 @@ npm run docker:down      # Servisleri durdur
 - [x] Docker servisleri
 - [x] Veritabanı şeması
 - [x] Temel type tanımları
+- [x] **YENİ: Layout ve navigasyon sistemi**
+- [x] **YENİ: Responsive sidebar sistemi**
+- [x] **YENİ: Sticky header ve smooth animasyonlar**
+- [x] **YENİ: Ziyaretçi ve kullanıcı modu ayrımı**
 
 ### 🔄 Devam Eden
 - [ ] Auth sistemi
@@ -149,9 +174,34 @@ npm run docker:down      # Servisleri durdur
 
 ### 📅 Planlanan
 - [ ] Kanun & karar sistemi
-
 - [ ] Tema & reklamlar
 - [ ] Deploy
+
+## 🎨 **YENİ: UI/UX Özellikleri** 🆕
+
+### **Responsive Sidebar Sistemi**
+- **Kullanıcı Modunda:** Her ekran boyutunda açılabilir
+- **Ziyaretçi Modunda:** Sadece 768px altında görünür
+- **Toggle Özelliği:** Aç/kapat butonu ve X butonu
+- **Smooth Animasyonlar:** 300ms transition süreleri
+
+### **Sticky Header**
+- **Scroll Efekti:** Scroll sırasında backdrop filter
+- **Responsive Davranış:** 768px altında optimize edilmiş
+- **Dark Mode Toggle:** Responsive yerleşim
+- **Z-Index Yönetimi:** Proper stacking order
+
+### **Responsive Breakpoint Sistemi**
+- **768px:** Kritik responsive breakpoint
+- **Navigation Linkler:** Küçük ekranlarda sidebar'a taşınır
+- **Kullanıcı Adı:** Büyük ekranlarda görünür
+- **Site İsmi:** Küçük ekranlarda ortalanır
+
+### **Component Yapısı**
+- **Navbar.tsx:** Responsive header, sticky, dark mode
+- **Sidebar.tsx:** User mode sidebar, toggle, responsive
+- **VisitorSidebar.tsx:** Visitor mode sidebar, mobile only
+- **ThemeToggle.tsx:** Size prop ile responsive boyutlar
 
 ## 🤝 Katkıda Bulunma
 
@@ -167,9 +217,13 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 
 ## 📞 İletişim
 
-- **Proje:** [GitHub Issues](https://github.com/username/hukuk-platformu/issues)
-- **E-posta:** info@hukuk-platformu.com
+- **Proje:** [GitHub Issues](https://github.com/username/yargi-tam/issues)
+- **E-posta:** info@yargi-tam.com
 
 ---
 
 **Not:** Bu proje geliştirme aşamasındadır. Production kullanımı için ek güvenlik önlemleri alınmalıdır.
+
+**Son Güncelleme:** 15 Ağustos 2024 - Layout ve navigasyon sistemi tamamen yenilendi, responsive tasarım optimize edildi, dokümantasyon güncellendi.
+
+**Versiyon:** 2.1.1

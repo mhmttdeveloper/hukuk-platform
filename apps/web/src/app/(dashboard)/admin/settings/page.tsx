@@ -46,7 +46,7 @@ interface SystemSettings {
 
 const defaultSettings: SystemSettings = {
   general: {
-    siteName: 'Hukuk Platformu',
+    siteName: 'YargıTam',
     siteDescription: 'Türkiye\'nin en kapsamlı hukuk bilgi platformu',
     siteUrl: 'https://hukuk-platformu.com',
     contactEmail: 'info@hukuk-platformu.com',

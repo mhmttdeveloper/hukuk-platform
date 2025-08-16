@@ -137,40 +137,40 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold text-gray-900">
-            Hukuk Platformu'na Üye Olun
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            YargıTam'a Üye Olun
+          </h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Zaten hesabınız var mı?{' '}
-            <Link href="/auth/signin" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href="/auth/signin" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
               Giriş yapın
             </Link>
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-md">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
+          <div className="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-md">
             {success}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white shadow rounded-lg p-8">
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 shadow rounded-lg p-8">
           {/* Personal Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Kişisel Bilgiler</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">Kişisel Bilgiler</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Ad *
                 </label>
                 <input
@@ -180,12 +180,12 @@ export default function RegisterPage() {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label htmlFor="surname" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="surname" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Soyad *
                 </label>
                 <input
@@ -195,13 +195,13 @@ export default function RegisterPage() {
                   required
                   value={formData.surname}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 E-posta Adresi *
               </label>
               <input
@@ -211,12 +211,12 @@ export default function RegisterPage() {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="profession" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="profession" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Meslek/Unvan *
               </label>
               <input
@@ -227,12 +227,12 @@ export default function RegisterPage() {
                 value={formData.profession}
                 onChange={handleInputChange}
                 placeholder="Örn: Avukat, Hukuk Müşaviri, Akademisyen"
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Biyografi
               </label>
               <textarea
@@ -242,18 +242,18 @@ export default function RegisterPage() {
                 value={formData.bio}
                 onChange={handleInputChange}
                 placeholder="Kendiniz hakkında kısa bilgi..."
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
               />
             </div>
           </div>
 
           {/* Security */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Güvenlik</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">Güvenlik</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Şifre *
                 </label>
                 <input
@@ -263,13 +263,13 @@ export default function RegisterPage() {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
-                <p className="mt-1 text-xs text-gray-500">En az 8 karakter</p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">En az 8 karakter</p>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Şifre Tekrar *
                 </label>
                 <input
@@ -279,7 +279,7 @@ export default function RegisterPage() {
                   required
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
             </div>
@@ -287,11 +287,11 @@ export default function RegisterPage() {
 
           {/* Social Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Sosyal Medya (İsteğe Bağlı)</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">Sosyal Medya (İsteğe Bağlı)</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="socialLinks.linkedin" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="socialLinks.linkedin" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   LinkedIn
                 </label>
                 <input
@@ -301,12 +301,12 @@ export default function RegisterPage() {
                   value={formData.socialLinks.linkedin}
                   onChange={handleInputChange}
                   placeholder="https://linkedin.com/in/..."
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label htmlFor="socialLinks.twitter" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="socialLinks.twitter" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Twitter/X
                 </label>
                 <input
@@ -316,12 +316,12 @@ export default function RegisterPage() {
                   value={formData.socialLinks.twitter}
                   onChange={handleInputChange}
                   placeholder="https://twitter.com/..."
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label htmlFor="socialLinks.website" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="socialLinks.website" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Kişisel Website
                 </label>
                 <input
@@ -331,7 +331,7 @@ export default function RegisterPage() {
                   value={formData.socialLinks.website}
                   onChange={handleInputChange}
                   placeholder="https://example.com"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
             </div>
@@ -339,11 +339,11 @@ export default function RegisterPage() {
 
           {/* Contact Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-gray-900 border-b pb-2">İletişim Bilgileri (İsteğe Bağlı)</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">İletişim Bilgileri (İsteğe Bağlı)</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="contactInfo.phone" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="contactInfo.phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Telefon
                 </label>
                 <input
@@ -353,12 +353,12 @@ export default function RegisterPage() {
                   value={formData.contactInfo.phone}
                   onChange={handleInputChange}
                   placeholder="+90 (5XX) XXX XX XX"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label htmlFor="contactInfo.city" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="contactInfo.city" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Şehir
                 </label>
                 <input
@@ -368,12 +368,12 @@ export default function RegisterPage() {
                   value={formData.contactInfo.city}
                   onChange={handleInputChange}
                   placeholder="İstanbul"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label htmlFor="contactInfo.address" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="contactInfo.address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Adres
                 </label>
                 <input
@@ -383,7 +383,7 @@ export default function RegisterPage() {
                   value={formData.contactInfo.address}
                   onChange={handleInputChange}
                   placeholder="Mahalle, Sokak, No"
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors"
                 />
               </div>
             </div>
@@ -393,20 +393,20 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? 'Kayıt yapılıyor...' : 'Üye Ol'}
             </button>
           </div>
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-gray-600 dark:text-gray-400">
             <p>
               Üye olarak{' '}
-              <Link href="/terms" className="text-blue-600 hover:text-blue-500">
+              <Link href="/terms" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
                 Kullanım Şartları
               </Link>
               {' '}ve{' '}
-              <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
+              <Link href="/privacy" className="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
                 Gizlilik Politikası
               </Link>
               'nı kabul etmiş olursunuz.

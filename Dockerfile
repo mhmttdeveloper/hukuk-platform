@@ -1,4 +1,4 @@
-# Multi-stage build for Hukuk Platformu
+# Multi-stage build for YargıTam
 FROM node:20-alpine AS base
 
 # Install dependencies only when needed

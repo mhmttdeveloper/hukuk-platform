@@ -18,28 +18,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log("Auth: Missing credentials")
           return null
         }
 
         try {
+          console.log(`Auth: Attempting login for ${credentials.email}`)
+          
           const user = await prisma.user.findUnique({
             where: { email: credentials.email }
           })
 
           if (!user) {
+            console.log(`Auth: User not found for ${credentials.email}`)
             return null
           }
 
+          console.log(`Auth: User found: ${user.email}, role: ${user.role}, verified: ${user.verifiedStatus}`)
+
           // Check if user is verified
           if (user.verifiedStatus !== "VERIFIED") {
+            console.log(`Auth: User not verified: ${user.verifiedStatus}`)
             throw new Error("Hesabınız henüz doğrulanmamış. Lütfen admin ile iletişime geçin.")
           }
 
           const isPasswordValid = await bcrypt.compare(credentials.password, user.passwordHash)
 
           if (!isPasswordValid) {
+            console.log(`Auth: Invalid password for ${credentials.email}`)
             return null
           }
+
+          console.log(`Auth: Login successful for ${credentials.email}`)
 
           return {
             id: user.id,

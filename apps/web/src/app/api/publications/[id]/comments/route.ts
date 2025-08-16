@@ -129,7 +129,7 @@ export async function POST(
         publicationId: params.id,
         authorId: session.user.id,
         parentId: parentId || null,
-        status: session.user.role === 'ADMIN' || session.user.role === 'EDITOR' ? 'APPROVED' : 'PENDING'
+        status: (session.user as any).role === 'ADMIN' || (session.user as any).role === 'EDITOR' ? 'APPROVED' : 'PENDING'
       },
       include: {
         author: {
@@ -146,7 +146,7 @@ export async function POST(
 
     return NextResponse.json(comment, { status: 201 })
   } catch (error) {
-    if (error.name === 'ZodError') {
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Geçersiz veri formatı', details: error.errors },
         { status: 400 }

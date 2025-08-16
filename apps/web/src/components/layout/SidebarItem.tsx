@@ -104,6 +104,14 @@ export function SidebarItem({
               <Link
                 key={subItem.name}
                 href={subItem.href}
+                onClick={(e) => {
+                  // Navigasyon sonrası sidebar'ı kapatma
+                  // Sadece mobilde sidebar açıksa kapat
+                  if (window.innerWidth < 1024) {
+                    // Mobilde sidebar'ı kapatmak için custom event gönder
+                    window.dispatchEvent(new CustomEvent('closeSidebar'))
+                  }
+                }}
                 className={`group flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
                   pathname === subItem.href
                     ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
@@ -131,6 +139,14 @@ export function SidebarItem({
   return (
     <Link
       href={href || '#'}
+      onClick={(e) => {
+        // Navigasyon sonrası sidebar'ı kapatma
+        // Sadece mobilde sidebar açıksa kapat
+        if (window.innerWidth < 1024) {
+          // Mobilde sidebar'ı kapatmak için custom event gönder
+          window.dispatchEvent(new CustomEvent('closeSidebar'))
+        }
+      }}
       className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
         isActuallyActive
           ? 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100'

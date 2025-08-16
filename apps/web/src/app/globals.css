@@ -2,51 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS for responsive sidebar */
-@media (max-width: 1023px) {
-  /* Mobile ve tablet için sidebar'ı gizle ve content'i tam genişlik yap */
-  .sidebar-mobile-hidden {
-    display: none;
-  }
-
-  .content-mobile-full {
-    padding-left: 0 !important;
-  }
-  
-  /* Mobile'da sidebar'ı gizle */
-  .sidebar-mobile-hidden {
-    display: none !important;
-  }
-  
-  /* Mobile'da content padding'i kaldır */
-  .content-mobile-full {
-    padding-left: 0 !important;
-  }
-}
-
-/* Sidebar her zaman görünür olmalı */
-.sidebar-always-visible {
-  display: block !important;
-  transform: none !important;
-}
-
-/* Navbar her zaman en üstte */
-.navbar-top-layer {
-  z-index: 100 !important;
-}
-
-/* Sidebar navbar'ın altında */
-.sidebar-below-navbar {
-  z-index: 90 !important;
-}
-
 /* Custom scrollbar styles for sidebar */
 .sidebar-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #d1d5db transparent;
   scroll-behavior: smooth;
-  max-height: calc(100vh - 128px); /* 100vh - navbar height (64px) - header height (64px) */
-  min-height: 200px; /* Minimum height to ensure scrolling is visible */
 }
 
 .sidebar-scrollbar::-webkit-scrollbar {
@@ -88,27 +48,134 @@
   background-color: #9ca3af;
 }
 
-/* Ensure sidebar content doesn't overflow */
-.sidebar-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
+/* Sidebar navigation styles */
 .sidebar-nav {
-  flex: 1;
-  overflow-y: auto;
   min-height: 0;
-  padding-bottom: 1rem; /* Add some bottom padding for better scrolling experience */
+  flex: 1;
 }
 
-/* Sidebar container with proper height constraints */
-.sidebar-container {
-  height: calc(100vh - 64px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+/* Sidebar kapalıyken pointer-events devre dışı */
+.sidebar-container:not(.translate-x-0) {
+  pointer-events: none;
 }
+
+.sidebar-container:not(.translate-x-0) * {
+  pointer-events: none;
+}
+
+/* Sidebar tam yükseklik - header'ın altından başlar */
+.sidebar-container {
+  height: calc(100vh - 64px) !important;
+  min-height: calc(100vh - 64px) !important;
+  max-height: calc(100vh - 64px) !important;
+  z-index: 9998 !important;
+  /* Overlay olarak çalışması için */
+  position: fixed !important;
+  top: 64px !important;
+  left: 0 !important;
+  /* Content kaymasını önle */
+  margin-left: 0 !important;
+  /* Smooth animasyonlar */
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Visitor sidebar için özel z-index */
+.visitor-sidebar {
+  z-index: 9998 !important;
+  /* Overlay olarak çalışması için */
+  position: fixed !important;
+  top: 64px !important;
+  left: 0 !important;
+  /* Content kaymasını önle */
+  margin-left: 0 !important;
+  /* Smooth animasyonlar */
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Main container z-index ve çakışma yönetimi */
+main {
+  z-index: 9996;
+  position: relative;
+  /* Sidebar açıkken content kaymasın */
+  margin-left: 0 !important;
+  transition: none !important;
+}
+
+/* Z-index hiyerarşisi - sidebar'lar her zaman üstte */
+/* Header - en üstte */
+.sticky {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Sidebar'lar - header'ın altında ama content'in üstünde */
+.sidebar-container {
+  z-index: 9998 !important;
+}
+
+.visitor-sidebar {
+  z-index: 9998 !important;
+}
+
+/* Sidebar backdrop - content'in üstünde */
+.fixed.inset-0.bg-black.bg-opacity-50 {
+  z-index: 9997 !important;
+}
+
+/* Main content - en altta */
+main {
+  z-index: 9996;
+  position: relative;
+  /* Sidebar açıkken content kaymasın */
+  margin-left: 0 !important;
+  transition: none !important;
+}
+
+/* Header sticky davranışı */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
+/* Sticky header animasyonu */
+.sticky {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Scroll sırasında header gölgesi */
+.sticky.scrolled {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Dark mode sticky header */
+.dark .sticky {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dark .sticky.scrolled {
+  background-color: rgba(31, 41, 55, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Sidebar responsive davranışı - overlay olarak çalışır */
+.sidebar-container {
+  /* Mobil ve desktop'ta aynı davranış */
+  transition: all 0.3s ease-in-out;
+  /* Content kaymasını önle */
+  margin-left: 0 !important;
+}
+
+/* Content kayma kaldırıldı - sidebar overlay olarak çalışır */
+/* Eski margin-left kodları kaldırıldı */
 
 /* Kanun ve İçtihat Alıntısı Stilleri */
 .kanun-alintisi,
@@ -314,5 +381,74 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+}
+
+/* Header ve main content genişlik eşitliği */
+.content-container {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .content-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Header content wrapper - content container ile aynı genişlik */
+.header-content-wrapper {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem;
+  position: relative;
+}
+
+/* Header inner box - tüm tasarım özellikleri burada */
+.header-inner-box {
+  background-color: rgb(255 255 255);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06);
+  border: 1px solid rgb(229 231 235);
+  overflow: visible;
+}
+
+.dark .header-inner-box {
+  background-color: rgb(31 41 55);
+  border: 1px solid rgb(55 65 81);
+}
+
+/* Dropdown menüler için z-index ve positioning */
+.header-inner-box .relative {
+  position: relative;
+  z-index: 50;
+}
+
+.header-inner-box .absolute {
+  position: absolute;
+  z-index: 150;
+}
+
+@media (min-width: 640px) {
+  .header-content-wrapper {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-content-wrapper {
+    padding: 1rem;
   }
 }

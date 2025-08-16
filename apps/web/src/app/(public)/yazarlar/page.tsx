@@ -348,7 +348,7 @@ export default function AuthorsPage() {
               Yazarlar Hakkında
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed max-w-3xl mx-auto">
-              Hukuk platformumuzda yer alan yazarlar, alanlarında uzmanlaşmış akademisyenler, 
+              YargıTam'da yer alan yazarlar, alanlarında uzmanlaşmış akademisyenler, 
               avukatlar ve hukuk profesyonelleridir. Her yazar, kaliteli ve güncel hukuki içerik 
               üretmek için titizlikle seçilmiştir.
             </p>

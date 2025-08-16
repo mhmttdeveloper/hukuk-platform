@@ -2,29 +2,31 @@ import Link from 'next/link'
 
 export default function HomePage() {
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Hero Section */}
-      <section className="text-center py-16">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
-          Hukuk Platformuna Hoş Geldiniz
-        </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-          Hukukçulara özel, güvenilir bilgi ve yayın platformu. Hukuki makaleler, kanunlar, 
-          yargıtay kararları ve uzman yorumlarına tek yerden erişim.
-        </p>
-        <div className="flex justify-center space-x-4">
-          <Link
-            href="/publications"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-          >
-            Yayınları Keşfet
-          </Link>
-          <Link
-            href="/auth/register"
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-medium transition-colors"
-          >
-            Ücretsiz Kayıt Ol
-          </Link>
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            YargıTam'a Hoş Geldiniz
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            Hukukçulara özel, güvenilir bilgi ve yayın platformu. Hukuki makaleler, kanunlar, 
+            yargıtay kararları ve uzman yorumlarına tek yerden erişim.
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Link
+              href="/publications"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              Yayınları Keşfet
+            </Link>
+            <Link
+              href="/auth/register"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              Ücretsiz Kayıt Ol
+            </Link>
+          </div>
         </div>
       </section>
 
